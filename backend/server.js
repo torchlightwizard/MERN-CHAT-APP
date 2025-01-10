@@ -15,21 +15,54 @@ const mysql_connection = mysql.createConnection({
 })
 
 mysql_connection.connect()
-mysql_connection.query("select * from chat", (err, rows, fields) => {
-    console.log(rows)
-})
-mysql_connection.end()
 
 app.use(cors())
 app.use(express.text())
 
 app.post("/post", (req, res) => {
-    console.log("Incoming Message:", req.body)
+    const message = req.body
+    console.log("Incoming Message:", message)
+    mysql_connection.query(`insert into chat (message) values (?)`, [message], (err, results, fields) => {
+        if (err) throw err
+        console.log(results)
+    })
     res.json({"Receive": true})
 })
 
 app.all("/", (req, res) => {
     res.end("Bad Gateway")
+})
+
+let ctrlCount = 0
+process.on("SIGINT", () => {
+    if (ctrlCount == 0) {
+        console.log("Entered Exit Mode")
+        console.log("Press 'y' or 'n' to exit or stay")
+        console.log("Press CTRL+C again to exit")
+    }
+
+    ctrlCount += 1
+    if (ctrlCount > 1) {
+        console.log("Disconnecting db")
+        console.log("Exiting")
+        mysql_connection.end()
+        process.exit(0)
+    }
+
+    process.stdin.setEncoding("utf8")
+    process.stdin.once("data", (data) => {
+        const key = data.trim().toLowerCase()
+        if (key === "y" || key === "yes") {
+            console.log("Disconnecting db")
+            console.log("Exiting")
+            mysql_connection.end()
+            process.exit(0)
+        }
+        else {
+            console.log("Exiting Exit Mode")
+            ctrlCount = 0
+        }
+    })
 })
 
 app.listen(port, () => {
