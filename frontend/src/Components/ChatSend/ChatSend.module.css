@@ -1,0 +1,12 @@
+.chatsend {
+    border: 0px solid #000000;
+    border-radius: 8px;
+
+    background-color: #ffffff;
+    color: #000000;
+
+    padding: 10px;
+    margin: 10px;
+    height: 5%;
+    width: 5%;
+}
