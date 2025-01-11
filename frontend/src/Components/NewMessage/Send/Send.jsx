@@ -1,6 +1,6 @@
-import styles from "./ChatSend.module.css"
+import styles from "./Send.module.css"
 
-export default function ChatSend (props) {
+export default function Send (props) {
     const message = props.message
     const setMessage = props.setMessage
 
@@ -14,5 +14,5 @@ export default function ChatSend (props) {
         }).then((res) => setMessage(""))
     }
 
-    return <button className={styles.chatsend} onClick={handleSend}>Send</button>
+    return <button className={styles.send} onClick={handleSend}>Send</button>
 }

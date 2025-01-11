@@ -1,15 +1,10 @@
-import { useState } from "react"
 import styles from "./App.module.css"
-import ChatInput from "./Components/ChatInput/ChatInput"
-import ChatSend from "./Components/ChatSend/ChatSend"
+import NewMessage from "./Components/NewMessage/NewMessage";
 
 function App() {
-  const [message, setMessage] = useState("");
-
   return (
     <div className={styles.app}>
-      <ChatInput message={message} setMessage={setMessage}></ChatInput>
-      <ChatSend message={message} setMessage={setMessage}></ChatSend>
+      <NewMessage />
     </div>
   )
 }

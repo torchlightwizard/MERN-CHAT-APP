@@ -21,10 +21,13 @@ app.use(express.text())
 
 app.post("/post", (req, res) => {
     const message = req.body
-    console.log("Incoming Message:", message)
-    mysql_connection.query(`insert into chat (message) values (?)`, [message], (err, results, fields) => {
+    const sender = req.get("origin")
+    // console.log("New Message:", message)
+    // console.log("Host:", req.get("host"))
+    // console.log("Origin:", req.get("origin"))
+    mysql_connection.query(`insert into chat (sender, message) values (?, ?)`, [sender, message], (err, results, fields) => {
         if (err) throw err
-        console.log(results)
+        // console.log(results)
     })
     res.json({"Receive": true})
 })
@@ -65,6 +68,12 @@ process.on("SIGINT", () => {
     })
 })
 
+/* 
+ * Correct stopping procedure, if started by "npm start":
+ * 1. CTRL+C
+ * 2. Y or y
+ * 3. CTRL+C
+*/
 app.listen(port, () => {
     console.log(`Started on port ${port}`)
 })
