@@ -19,17 +19,35 @@ mysql_connection.connect()
 app.use(cors())
 app.use(express.text())
 
-app.post("/post", (req, res) => {
+let getCount = 0
+app.get("/get/chat", (req, res) => {
+    console.log(getCount)
+    getCount++
+    try {
+        mysql_connection.query("select * from chat", (err, rows, fields) => {
+            if (err) throw err
+            res.status(200).json(rows)
+        })
+    } catch (err) {
+        res.status(400).send("Request failed")
+    }
+})
+
+app.post("/post/new", (req, res) => {
     const message = req.body
     const sender = req.get("origin")
     // console.log("New Message:", message)
     // console.log("Host:", req.get("host"))
     // console.log("Origin:", req.get("origin"))
-    mysql_connection.query(`insert into chat (sender, message) values (?, ?)`, [sender, message], (err, results, fields) => {
-        if (err) throw err
-        // console.log(results)
-    })
-    res.json({"Receive": true})
+    try {
+        mysql_connection.query(`insert into chat (sender, message) values (?, ?)`, [sender, message], (err, results, fields) => {
+            if (err) throw err
+            // console.log(results)
+        })
+        res.status(200).send("Request success")
+    } catch (err) {
+        res.status(400).send("Request failed")
+    }
 })
 
 app.all("/", (req, res) => {
